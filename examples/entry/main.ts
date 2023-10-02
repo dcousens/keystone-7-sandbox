@@ -1,6 +1,6 @@
 import { writeFile } from 'node:fs/promises'
 import { setup } from '@keystone-7/internals'
-import { id, text, checkbox } from '@keystone-7/internals/fields'
+import { id, text, checkbox, relationship } from '@keystone-7/internals/fields'
 import { printSchema } from 'graphql'
 
 import { PrismaClient } from './.myprisma/client'

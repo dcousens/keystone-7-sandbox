@@ -37,10 +37,10 @@ export async function setup (prisma: PrismaClient, {
 //                    console.error({ fieldKey, fieldConfig })
                   if (!fieldConfig) continue // ...? Typescript
 
-                  const mappedType = PRISMA_GRAPHQL_TYPE_MAPPING[fieldConfig.prisma.type]
+                  const fieldGraphQLOutputType = fieldConfig?.graphql?.type ?? PRISMA_GRAPHQL_TYPE_MAPPING[fieldConfig.prisma.type]
                   yield {
                     [fieldKey]: {
-                      type: new GraphQLNonNull(mappedType),
+                      type: new GraphQLNonNull(fieldGraphQLOutputType),
                       resolve: (parent: any) => parent[fieldKey],
                     },
                   }

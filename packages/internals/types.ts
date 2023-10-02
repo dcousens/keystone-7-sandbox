@@ -1,5 +1,8 @@
+import type { GraphQLOutputType } from 'graphql';
+
 export type FieldConfiguration = {
-  graphql: {
+  graphql?: {
+    type?: GraphQLOutputType
   }
   prisma: {
     type: 'Boolean' | 'DateTime' | 'Int' | 'String'
