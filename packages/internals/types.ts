@@ -4,9 +4,16 @@ export type Configuration = {
     [key: string]: {
       fields: {
         [key: string]: {
-          db: {
-            type: string
-            null: boolean
+          prisma: {
+            type: 'Int' | 'String'
+            modifiers: {
+              optional?: boolean
+              array?: boolean
+            },
+            attributes: {
+              id?: boolean,
+              default?: string
+            },
           }
           graphql: {
           }

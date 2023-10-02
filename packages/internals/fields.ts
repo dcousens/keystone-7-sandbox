@@ -2,9 +2,15 @@ import type { FieldConfiguration } from './types'
 
 export function id (): FieldConfiguration {
   return {
-    db: {
+    prisma: {
       type: 'String',
-      null: false
+      modifiers: {
+        optional: false,
+        array: false
+      },
+      attributes: {
+        id: true
+      },
     },
     graphql: {
     },
@@ -18,9 +24,12 @@ export function id (): FieldConfiguration {
 
 export function text (): FieldConfiguration {
   return {
-    db: {
+    prisma: {
       type: 'String',
-      null: false
+      modifiers: {},
+      attributes: {
+        default: `""`
+      },
     },
     graphql: {
     },
