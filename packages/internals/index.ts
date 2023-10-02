@@ -50,13 +50,13 @@ export function setup (prisma: PrismaClient, {
             },
           })
 
-          const mappedIdType = listConfig.fields.id.prisma.type
+					const mappedIdType = PRISMA_GRAPHQL_TYPE_MAPPING[listConfig.fields.id.prisma.type]
           yield {
             [listKey]: {
               type: listType,
               args: {
                 id: {
-                  type: new GraphQLNonNull(GraphQLString)
+                  type: new GraphQLNonNull(mappedIdType)
                 }
               },
               resolve: async (parent: any, args: {
