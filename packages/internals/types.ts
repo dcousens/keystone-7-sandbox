@@ -2,14 +2,21 @@ export type FieldConfiguration = {
   graphql: {
   }
   prisma: {
-    type: 'Int' | 'String'
+    type: 'Boolean' | 'DateTime' | 'Int' | 'String'
     modifiers: {
-      optional?: boolean
+      optional: boolean
       array?: boolean
     },
     attributes: {
       id?: boolean,
       default?: string
+      map?: string
+      relation?: {
+        name: string,
+        fields: string[],
+        references: string[]
+      }
+      unique?: boolean
     },
   }
   hooks: {

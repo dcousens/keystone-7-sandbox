@@ -1,5 +1,6 @@
 import type { Configuration, Context } from './types'
 import {
+  GraphQLBoolean,
   GraphQLInt,
   GraphQLNonNull,
   GraphQLObjectType,
@@ -10,6 +11,8 @@ import type { PrismaClient } from '@prisma/client'
 import { printSchema } from 'graphql'
 
 const PRISMA_GRAPHQL_TYPE_MAPPING = {
+  'Boolean': GraphQLBoolean,
+  'DateTime': GraphQLString,
   'Int': GraphQLInt,
   'String': GraphQLString
 }
@@ -74,7 +77,7 @@ export function setup (prisma: PrismaClient, {
     query: Query,
   })
 
-  console.log({ gql: printSchema(schema) })
+  console.log(printSchema(schema))
   return {
   }
 }

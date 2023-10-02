@@ -1,5 +1,5 @@
 import { setup } from '@keystone-7/internals'
-import { id, text } from '@keystone-7/internals/fields'
+import { id, text, checkbox } from '@keystone-7/internals/fields'
 import { PrismaClient } from './.myprisma/client'
 
 async function main () {
@@ -11,6 +11,14 @@ async function main () {
           id: id(),
           title: text(),
           context: text(),
+        }
+      },
+
+      User: {
+        fields: {
+          id: id(),
+          name: text(),
+          admin: checkbox(),
         }
       }
     }

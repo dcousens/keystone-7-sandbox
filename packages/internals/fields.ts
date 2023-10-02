@@ -26,9 +26,32 @@ export function text (): FieldConfiguration {
   return {
     prisma: {
       type: 'String',
-      modifiers: {},
+      modifiers: {
+        optional: true
+      },
       attributes: {
         default: `""`
+      },
+    },
+    graphql: {
+    },
+    hooks: {
+      resolveInput: async () => console.error('resolveInput'),
+      beforeOperation: async () => console.error('beforeOperation'),
+      afterOperation: async () => console.error('afterOperation')
+    }
+  }
+}
+
+export function checkbox (): FieldConfiguration {
+  return {
+    prisma: {
+      type: 'Boolean',
+      modifiers: {
+        optional: false
+      },
+      attributes: {
+        default: `false`
       },
     },
     graphql: {
