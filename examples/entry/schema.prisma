@@ -1,0 +1,18 @@
+/* vim: set filetype=conf: */
+
+datasource sqlite {
+  url               = env("DATABASE_URL")
+  shadowDatabaseUrl = env("SHADOW_DATABASE_URL")
+  provider          = "sqlite"
+}
+
+generator client {
+  provider = "prisma-client-js"
+  output   = "node_modules/.myprisma/client"
+}
+
+model Post {
+  id      String @id
+  title   String @default("")
+  content String @default("")
+}

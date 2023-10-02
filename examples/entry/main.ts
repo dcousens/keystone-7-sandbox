@@ -1,12 +1,14 @@
 import { setup } from '@keystone-7/internals'
-import { text } from '@keystone-7/internals/fields'
+import { id, text } from '@keystone-7/internals/fields'
 
 async function main () {
   const context = setup({
     lists: {
-      Foo: {
+      Post: {
         fields: {
-          bar: text(),
+          id: id(),
+          title: text(),
+          context: text(),
         }
       }
     }
