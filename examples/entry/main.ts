@@ -1,10 +1,13 @@
+import { writeFile } from 'node:fs/promises'
 import { setup } from '@keystone-7/internals'
 import { id, text, checkbox } from '@keystone-7/internals/fields'
+import { printSchema } from 'graphql'
+
 import { PrismaClient } from './.myprisma/client'
 
 async function main () {
   const prisma = new PrismaClient()
-  const context = setup(prisma, {
+  const context = await setup(prisma, {
     lists: {
       Post: {
         fields: {
@@ -23,6 +26,8 @@ async function main () {
       }
     }
   })
+
+  await writeFile('./schema.graphql', printSchema(context.schema))
 }
 
 main()

@@ -11,6 +11,7 @@
   "dependencies": {
     "@keystone-7/internals": "workspace:^",
     "@prisma/client": "^5.0.0",
+    "graphql": "^16.8.1",
     "prisma": "^5.3.1"
   }
 }

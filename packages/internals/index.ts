@@ -1,4 +1,3 @@
-import type { Configuration, Context } from './types'
 import {
   GraphQLBoolean,
   GraphQLInt,
@@ -6,9 +5,11 @@ import {
   GraphQLObjectType,
   GraphQLSchema,
   GraphQLString,
+  printSchema
 } from 'graphql'
 import type { PrismaClient } from '@prisma/client'
-import { printSchema } from 'graphql'
+
+import type { Configuration } from './types'
 
 const PRISMA_GRAPHQL_TYPE_MAPPING = {
   'Boolean': GraphQLBoolean,
@@ -17,11 +18,9 @@ const PRISMA_GRAPHQL_TYPE_MAPPING = {
   'String': GraphQLString
 }
 
-export function setup (prisma: PrismaClient, {
+export async function setup (prisma: PrismaClient, {
   lists
-}: Configuration): Context {
-  console.error({ lists })
-
+}: Configuration) {
   const Query = new GraphQLObjectType<undefined, number>({
     name: 'Query',
     fields: {
@@ -50,7 +49,8 @@ export function setup (prisma: PrismaClient, {
             },
           })
 
-					const mappedIdType = PRISMA_GRAPHQL_TYPE_MAPPING[listConfig.fields.id.prisma.type]
+          const prismaListKey = listKey.toLowerCase()
+          const mappedIdType = PRISMA_GRAPHQL_TYPE_MAPPING[listConfig.fields.id.prisma.type]
           yield {
             [listKey]: {
               type: listType,
@@ -62,7 +62,7 @@ export function setup (prisma: PrismaClient, {
               resolve: async (parent: any, args: {
                 id: string
               }) => {
-                return await prisma.post.findUnique({
+                return await prisma[prismaListKey].findUnique({
                   where: { id: args.id },
                 })
               },
@@ -77,7 +77,7 @@ export function setup (prisma: PrismaClient, {
     query: Query,
   })
 
-  console.log(printSchema(schema))
   return {
+    schema
   }
 }

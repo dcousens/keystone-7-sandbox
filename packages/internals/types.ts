@@ -40,4 +40,4 @@ export type Configuration = {
   }
 }
 
-export type Context = {}
+export type Context = {} // TODO
