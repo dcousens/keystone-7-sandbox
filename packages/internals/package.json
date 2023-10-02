@@ -6,6 +6,6 @@
   "private": true,
   "dependencies": {
     "graphql": "^16.8.1",
-    "prisma": "^5.0.0"
+    "@prisma/client": "^5.0.0"
   }
 }
