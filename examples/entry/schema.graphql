@@ -14,3 +14,20 @@ type User {
   name: String!
   admin: Boolean!
 }
+
+type Mutation {
+  createPost(data: PostInput!): Post
+  createUser(data: UserInput!): User
+}
+
+input PostInput {
+  id: String!
+  title: String!
+  context: String!
+}
+
+input UserInput {
+  id: String!
+  name: String!
+  admin: Boolean!
+}

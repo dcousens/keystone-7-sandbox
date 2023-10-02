@@ -29,8 +29,6 @@ export async function setup (prisma: PrismaClient, {
   lists
 }: Configuration) {
   const graphqlListTypes = Object.entries(lists).map(([listKey, listConfig]) => {
-    console.error({ listKey, listConfig })
-
     const { fields } = listConfig
     const graphqlFieldTypes = Object.entries(fields).map(([fieldKey, fieldConfig]) => {
       if (!fieldConfig) return // ...? Typescript
@@ -42,7 +40,6 @@ export async function setup (prisma: PrismaClient, {
         fieldKey,
         input: {
           type: new GraphQLNonNull(fieldGraphQLInputType),
-          resolve: (parent: any) => parent[fieldKey],
         },
         output: {
           type: new GraphQLNonNull(fieldGraphQLOutputType),
@@ -53,7 +50,7 @@ export async function setup (prisma: PrismaClient, {
 
     const prismaListKey = listKey.toLowerCase()
     const listInputType = new GraphQLInputObjectType({
-      name: listKey,
+      name: `${listKey}Input`,
       fields: {
         ...graphqlFieldTypes.reduce((a, x) => ({ ...a, [x.fieldKey]: x.input }), {}),
       },
@@ -102,14 +99,18 @@ export async function setup (prisma: PrismaClient, {
   const Query = new GraphQLObjectType<undefined, number>({
     name: 'Query',
     fields: {
-      ...graphqlListTypes.reduce((a, x) => ({ ...a, [x.listKey]: x.query }), {}),
+      ...graphqlListTypes
+        .filter(x => x.query)
+        .reduce((a, x) => ({ ...a, [x.listKey]: x.query }), {}),
     },
   })
 
   const Mutation = new GraphQLObjectType<undefined, number>({
     name: 'Mutation',
     fields: {
-      ...graphqlListTypes.reduce((a, x) => ({ ...a, [`create${x.listKey}`]: x.mutations.create }), {}),
+      ...graphqlListTypes
+        .filter(x => x.mutations.create)
+        .reduce((a, x) => ({ ...a, [`create${x.listKey}`]: x.mutations.create }), {}),
     },
   })
 
