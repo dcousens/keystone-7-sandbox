@@ -1,6 +1,6 @@
 type Query {
-  Post(id: String): Post
-  User(id: String): User
+  Post(where: PostWhereUniqueInput): Post
+  User(where: UserWhereUniqueInput): User
 }
 
 type Post {
@@ -15,6 +15,14 @@ type User {
   name: String
   admin: Boolean
   posts: [Post]
+}
+
+input PostWhereUniqueInput {
+  id: String
+}
+
+input UserWhereUniqueInput {
+  id: String
 }
 
 type Mutation {

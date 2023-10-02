@@ -83,28 +83,38 @@ export async function setup (prisma: PrismaClient, {
 
         return graphqlFieldTypes.reduce((a, x) => ({ ...a, [x.fieldKey]: {
           type: x.type,
-          resolve: (parent: any) => parent[x.fieldKey]
+          resolve: (parent: any) => {
+            return parent[x.fieldKey]
+          }
         } }), {})
       },
     })
 
-    graphqlListOutputTypesMap[listKey] = listOutputType
+    const listUniqueWhereType = new GraphQLInputObjectType({
+      name: `${listKey}WhereUniqueInput`,
+      fields: () => ({
+        id: {
+          type: resolveGraphQLType(graphqlListOutputTypesMap, listConfig.fields.id)
+        }
+      })
+    })
 
-    const graphqlIdType = resolveGraphQLType(graphqlListOutputTypesMap, listConfig.fields.id)
+    graphqlListOutputTypesMap[listKey] = listOutputType
     return {
       listKey,
       inputType: listInputType,
       outputType: listOutputType,
-
       query: {
         type: listOutputType,
         args: {
-          id: {
-            type: graphqlIdType
+          where: {
+            type: listUniqueWhereType
           }
         },
-        resolve: async (parent: any, where: {
-          id: string
+        resolve: async (_: any, { where }: {
+          where: {
+            id: string
+          }
         }) => {
           return await prisma[prismaListKey].findUnique({ where, })
         }
@@ -118,7 +128,7 @@ export async function setup (prisma: PrismaClient, {
               type: new GraphQLNonNull(listInputType)
             }
           },
-          resolve: async (parent: any, { data }: { data: unknown }) => {
+          resolve: async (_: any, { data }: { data: unknown }) => {
             return await prisma[prismaListKey].create({ data, })
           },
         }
