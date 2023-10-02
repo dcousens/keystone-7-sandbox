@@ -1,12 +1,20 @@
-type ListConfiguration = {
-}
-
-type Configuration <L extends string> = {
+type ConfigurationType = {
   lists: {
-    [key in L]: ListConfiguration
+    [key: string]: {
+      fields: {
+        [key: string]: {
+          db: {
+            type: string,
+            null: boolean
+          },
+          graphql: {
+          }
+        }
+      }
+    }
   }
 }
 
-export function setup <L extends string = string> (config: Configuration<L>) {
+export function setup (config: ConfigurationType) {
   return true
 }
