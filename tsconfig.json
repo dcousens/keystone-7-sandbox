@@ -7,7 +7,7 @@
     "resolveJsonModule": true,
     "baseUrl": "packages",
     "paths": {
-      "@dcousens/*": ["*"]
+      "@keystone-7/*": ["*"]
     }
   }
 }

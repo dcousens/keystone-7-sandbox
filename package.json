@@ -1,5 +1,6 @@
 {
-  "name": "@dcousens/monorepo",
+  "name": "@keystone-7/monorepo",
+  "author": "Thinkmill Labs Pty Ltd",
   "version": "0.0.99",
   "license": "MIT",
   "type": "module",

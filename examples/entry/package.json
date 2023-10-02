@@ -1,5 +1,5 @@
 {
-  "name": "@dcousens/examples/entry",
+  "name": "@keystone-7/examples/entry",
   "version": "0.0.1",
   "license": "MIT",
   "type": "module",
@@ -8,7 +8,7 @@
     "start": "tsx main.ts"
   },
   "dependencies": {
-    "@dcousens/foo": "workspace:^",
-    "@dcousens/bar": "workspace:^"
+    "@keystone-7/foo": "workspace:^",
+    "@keystone-7/bar": "workspace:^"
   }
 }
