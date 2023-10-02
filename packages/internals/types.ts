@@ -16,14 +16,14 @@ export type FieldConfiguration = {
       references: string[]
     }
     modifiers: {
-      optional: boolean
-      array?: boolean
+      list: boolean // default false
+      optional: boolean // default false
     },
     attributes: {
-      id?: boolean,
-      default?: string
-      map?: string
-      unique?: boolean
+      id: boolean,
+      default: string | null
+      map: string | null
+      unique: boolean
     },
   }
   hooks: {

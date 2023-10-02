@@ -1,8 +1,9 @@
 import {
   GraphQLBoolean,
+  GraphQLInputObjectType,
   GraphQLInt,
   GraphQLNonNull,
-  GraphQLInputObjectType,
+  GraphQLList,
   GraphQLObjectType,
   GraphQLSchema,
   GraphQLString,
@@ -25,22 +26,27 @@ type PrismaClient = {
   }
 }
 
+function resolveGraphQLTypeList (list: boolean, thing: any) {
+  return list ? new GraphQLList(thing) : thing
+}
+
 function resolveGraphQLType (
   listTypesMap: Record<string, GraphQLObjectType>,
   {
     prisma: {
       type,
       modifiers: {
+        list,
         optional
       }
     },
   }: FieldConfiguration,
 ) {
   if (typeof type === 'string') {
-    return PRISMA_GRAPHQL_TYPE_MAPPING[type]
+    return resolveGraphQLTypeList(list, PRISMA_GRAPHQL_TYPE_MAPPING[type])
   }
 
-  return listTypesMap[type.name]
+  return resolveGraphQLTypeList(list, listTypesMap[type.name])
 }
 
 export async function setup (prisma: PrismaClient, {
@@ -83,7 +89,6 @@ export async function setup (prisma: PrismaClient, {
     })
 
     graphqlListOutputTypesMap[listKey] = listOutputType
-    console.error({ listKey })
 
     const graphqlIdType = resolveGraphQLType(graphqlListOutputTypesMap, listConfig.fields.id)
     return {

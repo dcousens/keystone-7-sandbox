@@ -5,14 +5,15 @@ export function id (): FieldConfiguration {
     prisma: {
       type: 'String',
       modifiers: {
+        list: false,
         optional: false,
-        array: false
       },
       attributes: {
-        id: true
+        id: true,
+        default: null,
+        map: null,
+        unique: false
       },
-    },
-    graphql: {
     },
     hooks: {
       resolveInput: async () => console.error('resolveInput'),
@@ -27,13 +28,15 @@ export function text (): FieldConfiguration {
     prisma: {
       type: 'String',
       modifiers: {
+        list: false,
         optional: true
       },
       attributes: {
-        default: `""`
+        id: false,
+        default: `""`,
+        map: null,
+        unique: false
       },
-    },
-    graphql: {
     },
     hooks: {
       resolveInput: async () => console.error('resolveInput'),
@@ -48,13 +51,15 @@ export function checkbox (): FieldConfiguration {
     prisma: {
       type: 'Boolean',
       modifiers: {
+        list: false,
         optional: false
       },
       attributes: {
-        default: `false`
+        id: false,
+        default: `false`,
+        map: null,
+        unique: false
       },
-    },
-    graphql: {
     },
     hooks: {
       resolveInput: async () => console.error('resolveInput'),
@@ -65,9 +70,11 @@ export function checkbox (): FieldConfiguration {
 }
 
 export function relationship ({
-  ref
+  ref,
+  many
 }: {
-  ref: string
+  ref: string,
+  many?: boolean
 }): FieldConfiguration {
   return {
     prisma: {
@@ -77,12 +84,15 @@ export function relationship ({
         references: []
       },
       modifiers: {
+        list: many ?? false,
         optional: false
       },
       attributes: {
-      },
-    },
-    graphql: {
+        id: false,
+        default: null,
+        map: null,
+        unique: false
+      }
     },
     hooks: {
       resolveInput: async () => console.error('resolveInput'),

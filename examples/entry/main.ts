@@ -23,6 +23,7 @@ async function main () {
           id: id(),
           name: text(),
           admin: checkbox(),
+          posts: relationship({ ref: 'Post', many: true })
         }
       }
     }
