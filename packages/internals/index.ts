@@ -36,7 +36,6 @@ export function setup (prisma: PrismaClient, {
                   if (!fieldConfig) continue // ...? Typescript
 
                   const mappedType = PRISMA_GRAPHQL_TYPE_MAPPING[fieldConfig.prisma.type]
-
                   yield {
                     [fieldKey]: {
                       type: new GraphQLNonNull(mappedType),

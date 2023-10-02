@@ -1,4 +1,4 @@
-type __FieldConfiguration = {
+export type FieldConfiguration = {
   graphql: {
   }
   prisma: {
@@ -19,18 +19,18 @@ type __FieldConfiguration = {
   }
 }
 
+export type ListConfiguration = {
+  fields: {
+    id: FieldConfiguration
+  } & Partial<{
+    [key: string]: FieldConfiguration
+  }>
+}
+
 export type Configuration = {
   lists: {
-    [key: string]: {
-      fields: {
-        id: __FieldConfiguration
-      } & Partial<{
-        [key: string]: __FieldConfiguration
-      }>
-    }
+    [key: string]: ListConfiguration
   }
 }
 
-export type ListConfiguration = Configuration['lists'][string]
-export type FieldConfiguration = Configuration['lists'][string]['fields'][string]
 export type Context = {}
