@@ -27,9 +27,9 @@ export type FieldConfiguration = {
     },
   }
   hooks: {
-    resolveInput: () => Promise<unknown>
-    beforeOperation: () => Promise<unknown>
-    afterOperation: () => Promise<unknown>
+    resolveInput: (data: any) => Promise<unknown>
+    beforeOperation: (data: any) => Promise<unknown>
+    afterOperation: (data: any) => Promise<unknown>
   }
 }
 
@@ -39,9 +39,9 @@ export type ListConfiguration = {
     [key: string]: FieldConfiguration
   }
   hooks: {
-    resolveInput: () => Promise<unknown>
-    beforeOperation: () => Promise<unknown>
-    afterOperation: () => Promise<unknown>
+    resolveInput: (data: any) => Promise<unknown>
+    beforeOperation: (data: any) => Promise<unknown>
+    afterOperation: (data: any) => Promise<unknown>
   }
 }
 

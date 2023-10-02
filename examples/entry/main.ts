@@ -1,3 +1,4 @@
+import { randomBytes } from 'node:crypto'
 import { writeFile } from 'node:fs/promises'
 import { setup } from '@keystone-7/internals'
 import { id, text, checkbox, relationship } from '@keystone-7/internals/fields'
@@ -31,7 +32,13 @@ async function main () {
           posts: relationship({ ref: 'Post', many: true })
         },
         hooks: {
-          resolveInput: async () => console.error('Post resolveInput'),
+          resolveInput: async (data: any) => {
+            console.error('Post resolveInput')
+            return {
+              id: randomBytes(32).toString('hex'),
+              ...data
+            }
+          },
           beforeOperation: async () => console.error('Post beforeOperation'),
           afterOperation: async () => console.error('Post afterOperation')
         }
@@ -46,7 +53,7 @@ async function main () {
     source: `
       query test {
         user (where: {
-          id: "test"
+          id: "0"
         }) {
           name
         }
@@ -54,6 +61,22 @@ async function main () {
     `
   })
   console.error(JSON.stringify({ result }, null, 2))
+
+  const result2 = await graphql({
+    schema: context.schema,
+    source: `
+      mutation test {
+        createUser (data: {
+          name: "Foo"
+          admin: true
+        }) {
+          id
+          name
+        }
+      }
+    `
+  })
+  console.error(JSON.stringify({ result2 }, null, 2))
 }
 
 main()

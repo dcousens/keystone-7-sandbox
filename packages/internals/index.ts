@@ -131,11 +131,15 @@ export async function setup (prisma: PrismaClient, {
             }
           },
           resolve: async (_: any, { data }: { data: unknown }) => {
-            await listConfig.hooks.beforeOperation()
+            const data2 = await listConfig.hooks.resolveInput(data)
 
-            const result = await prisma[prismaListKey].create({ data, })
+            await listConfig.hooks.beforeOperation(data2)
 
-            await listConfig.hooks.afterOperation()
+            const result = await prisma[prismaListKey].create({ data: data2, })
+
+            await listConfig.hooks.afterOperation(data2)
+
+            return result
           },
         }
       }
