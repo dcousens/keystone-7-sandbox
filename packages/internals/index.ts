@@ -1,20 +1,15 @@
-type ConfigurationType = {
-  lists: {
-    [key: string]: {
-      fields: {
-        [key: string]: {
-          db: {
-            type: string,
-            null: boolean
-          },
-          graphql: {
-          }
-        }
-      }
-    }
-  }
-}
+import type { Configuration, Context } from './types'
 
-export function setup (config: ConfigurationType) {
-  return true
+export function setup (config: Configuration): Context {
+  return {
+    graphql: {
+      execute: async () => {
+
+      }
+    },
+
+    prisma: {
+
+    },
+  }
 }
