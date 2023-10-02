@@ -63,3 +63,31 @@ export function checkbox (): FieldConfiguration {
     }
   }
 }
+
+export function relationship ({
+  ref
+}: {
+  ref: string
+}): FieldConfiguration {
+  return {
+    prisma: {
+      type: {
+        name: ref,
+        fields: [],
+        references: []
+      },
+      modifiers: {
+        optional: false
+      },
+      attributes: {
+      },
+    },
+    graphql: {
+    },
+    hooks: {
+      resolveInput: async () => console.error('resolveInput'),
+      beforeOperation: async () => console.error('beforeOperation'),
+      afterOperation: async () => console.error('afterOperation')
+    }
+  }
+}

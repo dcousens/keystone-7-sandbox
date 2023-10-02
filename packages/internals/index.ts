@@ -9,7 +9,7 @@ import {
   printSchema
 } from 'graphql'
 
-import type { Configuration } from './types'
+import type { Configuration, FieldConfiguration } from './types'
 
 const PRISMA_GRAPHQL_TYPE_MAPPING = {
   'Boolean': GraphQLBoolean,
@@ -25,52 +25,77 @@ type PrismaClient = {
   }
 }
 
+function resolveGraphQLType (
+  listTypesMap: Record<string, GraphQLObjectType>,
+  {
+    prisma: {
+      type,
+      modifiers: {
+        optional
+      }
+    },
+  }: FieldConfiguration,
+) {
+  if (typeof type === 'string') {
+    return PRISMA_GRAPHQL_TYPE_MAPPING[type]
+  }
+
+  return listTypesMap[type.name]
+}
+
 export async function setup (prisma: PrismaClient, {
   lists
 }: Configuration) {
+  const graphqlListOutputTypesMap: Record<string, GraphQLObjectType> = {}
+
   const graphqlListTypes = Object.entries(lists).map(([listKey, listConfig]) => {
     const { fields } = listConfig
-    const graphqlFieldTypes = Object.entries(fields).map(([fieldKey, fieldConfig]) => {
-      if (!fieldConfig) return // ...? Typescript
-
-      const fieldGraphQLInputType = fieldConfig?.graphql?.input?.type ?? PRISMA_GRAPHQL_TYPE_MAPPING[fieldConfig.prisma.type]
-      const fieldGraphQLOutputType = fieldConfig?.graphql?.output?.type ?? PRISMA_GRAPHQL_TYPE_MAPPING[fieldConfig.prisma.type]
-
-      return {
-        fieldKey,
-        input: {
-          type: new GraphQLNonNull(fieldGraphQLInputType),
-        },
-        output: {
-          type: new GraphQLNonNull(fieldGraphQLOutputType),
-          resolve: (parent: any) => parent[fieldKey],
-        }
-      }
-    }).filter((x): x is Exclude<typeof x, undefined> => !!x)
-
     const prismaListKey = listKey.toLowerCase()
     const listInputType = new GraphQLInputObjectType({
       name: `${listKey}Input`,
-      fields: {
-        ...graphqlFieldTypes.reduce((a, x) => ({ ...a, [x.fieldKey]: x.input }), {}),
+      fields: () => {
+        const graphqlFieldTypes = Object.entries(fields).map(([fieldKey, fieldConfig]) => {
+          return {
+            fieldKey,
+            type: fieldConfig?.graphql?.input?.type ?? resolveGraphQLType(graphqlListOutputTypesMap, fieldConfig)
+          }
+        })
+
+        return graphqlFieldTypes.reduce((a, x) => ({ ...a, [x.fieldKey]: { type: x.type } }), {})
       },
     })
 
     const listOutputType = new GraphQLObjectType({
       name: listKey,
-      fields: {
-        ...graphqlFieldTypes.reduce((a, x) => ({ ...a, [x.fieldKey]: x.output }), {}),
+      fields: () => {
+        const graphqlFieldTypes = Object.entries(fields).map(([fieldKey, fieldConfig]) => {
+          return {
+            fieldKey,
+            type: fieldConfig?.graphql?.output?.type ?? resolveGraphQLType(graphqlListOutputTypesMap, fieldConfig)
+          }
+        })
+
+        return graphqlFieldTypes.reduce((a, x) => ({ ...a, [x.fieldKey]: {
+          type: x.type,
+          resolve: (parent: any) => parent[x.fieldKey]
+        } }), {})
       },
     })
 
-    const graphqlIdType = PRISMA_GRAPHQL_TYPE_MAPPING[listConfig.fields.id.prisma.type]
+    graphqlListOutputTypesMap[listKey] = listOutputType
+    console.error({ listKey })
+
+    const graphqlIdType = resolveGraphQLType(graphqlListOutputTypesMap, listConfig.fields.id)
     return {
       listKey,
+      inputType: listInputType,
+      outputType: listOutputType,
+
       query: {
         type: listOutputType,
         args: {
           id: {
-            type: new GraphQLNonNull(graphqlIdType)
+            type: graphqlIdType
           }
         },
         resolve: async (parent: any, where: {

@@ -14,6 +14,7 @@ async function main () {
           id: id(),
           title: text(),
           context: text(),
+          author: relationship({ ref: 'User' }),
         }
       },
 

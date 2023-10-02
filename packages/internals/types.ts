@@ -10,7 +10,11 @@ export type FieldConfiguration = {
     }
   }
   prisma: {
-    type: 'Boolean' | 'DateTime' | 'Int' | 'String'
+    type: 'Boolean' | 'DateTime' | 'Int' | 'String' | {
+      name: string,
+      fields: string[],
+      references: string[]
+    }
     modifiers: {
       optional: boolean
       array?: boolean
@@ -19,11 +23,6 @@ export type FieldConfiguration = {
       id?: boolean,
       default?: string
       map?: string
-      relation?: {
-        name: string,
-        fields: string[],
-        references: string[]
-      }
       unique?: boolean
     },
   }
@@ -37,9 +36,8 @@ export type FieldConfiguration = {
 export type ListConfiguration = {
   fields: {
     id: FieldConfiguration
-  } & Partial<{
     [key: string]: FieldConfiguration
-  }>
+  }
 }
 
 export type Configuration = {

@@ -1,18 +1,19 @@
 type Query {
-  Post(id: String!): Post
-  User(id: String!): User
+  Post(id: String): Post
+  User(id: String): User
 }
 
 type Post {
-  id: String!
-  title: String!
-  context: String!
+  id: String
+  title: String
+  context: String
+  author: User
 }
 
 type User {
-  id: String!
-  name: String!
-  admin: Boolean!
+  id: String
+  name: String
+  admin: Boolean
 }
 
 type Mutation {
@@ -21,13 +22,14 @@ type Mutation {
 }
 
 input PostInput {
-  id: String!
-  title: String!
-  context: String!
+  id: String
+  title: String
+  context: String
+  author: User
 }
 
 input UserInput {
-  id: String!
-  name: String!
-  admin: Boolean!
+  id: String
+  name: String
+  admin: Boolean
 }
