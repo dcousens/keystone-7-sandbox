@@ -30,8 +30,8 @@ function resolveGraphQLTypeList (list: boolean, thing: any) {
   return list ? new GraphQLList(thing) : thing
 }
 
-function resolveGraphQLType (
-  listTypesMap: Record<string, GraphQLObjectType>,
+function resolveGraphQLType <T extends GraphQLInputObjectType | GraphQLObjectType>(
+  listTypesMap: Record<string, T>,
   {
     prisma: {
       type,
@@ -52,6 +52,7 @@ function resolveGraphQLType (
 export async function setup (prisma: PrismaClient, {
   lists
 }: Configuration) {
+  const graphqlListInputTypesMap: Record<string, GraphQLInputObjectType> = {}
   const graphqlListOutputTypesMap: Record<string, GraphQLObjectType> = {}
 
   const graphqlListTypes = Object.entries(lists).map(([listKey, listConfig]) => {
@@ -63,7 +64,7 @@ export async function setup (prisma: PrismaClient, {
         const graphqlFieldTypes = Object.entries(fields).map(([fieldKey, fieldConfig]) => {
           return {
             fieldKey,
-            type: fieldConfig?.graphql?.input?.type ?? resolveGraphQLType(graphqlListOutputTypesMap, fieldConfig)
+            type: fieldConfig?.graphql?.input?.type ?? resolveGraphQLType(graphqlListInputTypesMap, fieldConfig)
           }
         })
 
@@ -99,6 +100,7 @@ export async function setup (prisma: PrismaClient, {
       })
     })
 
+    graphqlListInputTypesMap[listKey] = listInputType
     graphqlListOutputTypesMap[listKey] = listOutputType
     return {
       listKey,
@@ -129,7 +131,11 @@ export async function setup (prisma: PrismaClient, {
             }
           },
           resolve: async (_: any, { data }: { data: unknown }) => {
-            return await prisma[prismaListKey].create({ data, })
+            await listConfig.hooks.beforeOperation()
+
+            const result = await prisma[prismaListKey].create({ data, })
+
+            await listConfig.hooks.afterOperation()
           },
         }
       }
@@ -141,7 +147,7 @@ export async function setup (prisma: PrismaClient, {
     fields: {
       ...graphqlListTypes
         .filter(x => x.query)
-        .reduce((a, x) => ({ ...a, [x.listKey]: x.query }), {}),
+        .reduce((a, x) => ({ ...a, [x.listKey.toLowerCase()]: x.query }), {}),
     },
   })
 

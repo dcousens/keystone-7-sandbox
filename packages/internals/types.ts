@@ -38,6 +38,11 @@ export type ListConfiguration = {
     id: FieldConfiguration
     [key: string]: FieldConfiguration
   }
+  hooks: {
+    resolveInput: () => Promise<unknown>
+    beforeOperation: () => Promise<unknown>
+    afterOperation: () => Promise<unknown>
+  }
 }
 
 export type Configuration = {

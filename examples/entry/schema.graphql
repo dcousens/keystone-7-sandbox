@@ -1,6 +1,6 @@
 type Query {
-  Post(where: PostWhereUniqueInput): Post
-  User(where: UserWhereUniqueInput): User
+  post(where: PostWhereUniqueInput): Post
+  user(where: UserWhereUniqueInput): User
 }
 
 type Post {
@@ -34,12 +34,12 @@ input PostInput {
   id: String
   title: String
   context: String
-  author: User
+  author: UserInput
 }
 
 input UserInput {
   id: String
   name: String
   admin: Boolean
-  posts: [Post]
+  posts: [PostInput]
 }
