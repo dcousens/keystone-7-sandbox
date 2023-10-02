@@ -1,0 +1,11 @@
+{
+  "name": "@keystone-7/internals",
+  "version": "0.0.1",
+  "license": "MIT",
+  "type": "module",
+  "private": true,
+  "dependencies": {
+    "graphql": "^16.8.1",
+    "prisma": "^5.0.0"
+  }
+}

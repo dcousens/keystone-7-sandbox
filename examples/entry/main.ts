@@ -1,10 +1,9 @@
-import foo from '@keystone-7/foo'
-import { bar } from '@keystone-7/bar'
+import { setup } from '@keystone-7/internals'
 
 async function main () {
-  const output = foo() + bar()
-
-  console.log(output)
+  setup({
+    lists: {}
+  })
 }
 
 main()
